@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Greedy Match";
+}
+<form id="Greedymatch">
+    <div class="row col-xs-12" style="margin-top:30px">
+        <label>Enter the number of fragments (0-5000)</label>
+        <input id="Fragments" name="Fragments" class="form-control" type="number" min="0" max="5000" required />
+    </div>
+    <div class="row col-xs-12" style="margin-top:10px">
+        <div>
+            <label>Enter the text in curly braces { }</label>
+            <textarea name="StrText" class="form-control" rows="10" cols="50" id="StrText" required></textarea>
+        </div>
+    </div>
+    <div class="row col-xs-12" style="margin-top:10px">
+        <div>
+            <input class="form-control btn btn-primary" id="greedyMatch" type="submit" value="Greedy Match" name="btn" />
+        </div>
+    </div>
+    <div class="row col-xs-12" style="margin-top:15px">
+        <div class="col-xs-6 alert alert-success" id="success" style="display:none;overflow:hidden"></div>
+        <div class="col-xs-6 alert alert-danger" id="error" style="display:none;overflow:hidden"></div>
+    </div>
+
+</form>
+<script language="javascript">
+    $(document).ready(function () {
+        $('#Greedymatch').submit(function (e) {
+            var model = {
+                "Fragments": $('#Fragments').val(),
+                "StrText": $('#StrText').val()
+            };
+            $.ajax({
+                url: '@Url.Action("CheckValidText","GreedyMatch")',
+                type: "POST",
+                data: JSON.stringify(model),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (response) {
+                    if (response.success) {
+                        $("#success").html("Reassembled String: " + response.data);
+                        $("#success").css("display", "inline-block");
+                        $("#error").css("display", "none");
+                    } else {
+                        $("#error").html("Error!: " + response.errorMessage)
+                        $("#error").css("display", "inline-block");
+                        $("#success").css("display", "none");
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
